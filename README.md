@@ -1,1 +1,11 @@
-# holbertonscholl-unityeazeaeza
+Background Context This project will go over the basics of Unity’s user interface. For this project, import Unity’s Starter Assets package from the Asset Store. Open one of the sample scenes and use it to play around with the windows, layouts, options, navigation methods, etc. covered in the reading. It’s necessary to get a feel for what tools are at your disposal and what they do before you use them! It will also make it easier to answer this project’s tasks.
+
+The Unity project will not be used to grade this project’s tasks so don’t worry about saving it or making changes to it. You can open a scene by going to the Project window then choosing Sample and double-clicking any scene (‘third person’ or ‘first person’ scenes, I invite you to explore them both). While doing the reading, click on objects in the Scene window and play around with the interface to see what different tools and gizmos do.
+
+You can also rearrange the Unity interface however you like! Just make sure you know where to find everything. :)
+
+Resources Read or watch:
+
+AR/VR Curriculum Track Introduction Installing Unity Unity Interface Overview Unity Manual: The Main Windows Unity Manual: Gizmos Unity Manual Unity Manual: Hotkeys - Note: Unity’s default hotkeys referenced in the tasks can be found in the Shortcuts Manager Unity Manual: Using the Asset Store Learning Objectives At the end of this project, you are expected to be able to explain to anyone, without the help of Google:
+
+General How to navigate the Unity interface What is the Scene view What is the Game view What is the Hierarchy window What is the Project window What is the Inspector window What is the Console window What is the Toolbar What are the Play Buttons What are the Transform tools What are the Collab, Services, Account buttons What are the Layers and Layouts dropdowns What are Gizmos Requirements General All your files should be only one line All your files should end with a new line All hotkey questions should be answered in all capital letters with + separating keystrokes. Use CTRL/CMD in your answer if the hotkey includes it. Examples: CTRL/CMD + S, CTRL/CMD + SHIFT + C, F Example: $ cat 100-answer 2 $

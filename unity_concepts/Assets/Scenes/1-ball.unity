@@ -229,7 +229,7 @@ GameObject:
   - component: {fileID: 949232495}
   - component: {fileID: 949232494}
   m_Layer: 0
-  m_Name: Sphere
+  m_Name: Ball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

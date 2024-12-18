@@ -228,6 +228,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ball (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 4190351992191424313, guid: aed6d5926e8f4e848a539e98b8dd828d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 6ed9fe4538d3abc46851414056070155, type: 2}
     - target: {fileID: 4251645582774108688, guid: aed6d5926e8f4e848a539e98b8dd828d, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.3
@@ -482,6 +486,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ball (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 4190351992191424313, guid: aed6d5926e8f4e848a539e98b8dd828d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d4e83277f4b20dc439cf471e3b6eb67f, type: 2}
     - target: {fileID: 4251645582774108688, guid: aed6d5926e8f4e848a539e98b8dd828d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.89
@@ -539,6 +547,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ball (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 4190351992191424313, guid: aed6d5926e8f4e848a539e98b8dd828d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 42d04a4e98ecef8408590fad97036d95, type: 2}
     - target: {fileID: 4251645582774108688, guid: aed6d5926e8f4e848a539e98b8dd828d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -596,6 +608,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ball (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 4190351992191424313, guid: aed6d5926e8f4e848a539e98b8dd828d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31b84c41013d65f499321a64a561cf50, type: 2}
     - target: {fileID: 4251645582774108688, guid: aed6d5926e8f4e848a539e98b8dd828d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

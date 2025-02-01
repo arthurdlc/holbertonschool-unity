@@ -1,54 +1,10 @@
-# Unity generated files
-[Ll]ibrary/
-[Tt]emp/
-[Oo]bj/
-[Bb]uild/
-[Bb]uilds/
-[Ll]ogs/
-[Mm]emoryCaptures/
+.vscode
+Library
+Logs
+Packages
+ProjectSettings
+Temp
+UserSettings
+UnityEditor.UI.csproj
+UnityEngine.UI.csproj
 
-# User-specific settings
-[Dd]ebug/
-.vscode/
-.idea/
-*.csproj
-*.unityproj
-*.sln
-*.suo
-*.tmp
-*.user
-*.userprefs
-*.pidb
-*.booproj
-*.svd
-*.swp
-*.sln.docstates
-
-# Generated folders and files
-/Assets/AssetStoreTools*
-
-# Crash logs
-sysinfo.txt
-
-# Visual Studio Code settings
-.vscode/settings.json
-.vscode/tasks.json
-.vscode/launch.json
-.vscode/extensions.json
-.vscode/*.code-workspace
-
-# JetBrains Rider settings
-.idea/*
-*.iml
-
-# Other IDEs and OS files
-*.DS_Store
-Thumbs.db
-Desktop.ini
-
-# Temporary build artifacts
-*.apk
-*.unitypackage
-
-# Build output
-*.log

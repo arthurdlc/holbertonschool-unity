@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     {
         HandleMovement();
         HandleJump();
+        falling();
     }
 
     private void HandleMovement() // ici on adapte la gravitée pour un trucs plus realiste ( chiant de faire un suat de 2 pendant 5 secondes)
@@ -51,6 +52,13 @@ public class PlayerController : MonoBehaviour
         if (((1 << collision.gameObject.layer) & groundLayer) != 0)
         {
             isGrounded = false;
+        }
+    }
+    private void falling() // si le joueur tombe, il perd
+    {
+        if (rb.position.y < -10)
+        {
+            rb.position = new Vector3(0, 20, 0);
         }
     }
 }

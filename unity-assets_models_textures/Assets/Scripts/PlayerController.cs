@@ -20,8 +20,8 @@ public class PlayerController : MonoBehaviour
 
     void Update() 
     {
-        HandleMovement();
         HandleJump();
+        HandleMovement();
         falling();
     }
 

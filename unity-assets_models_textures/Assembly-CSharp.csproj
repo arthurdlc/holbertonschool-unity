@@ -61,9 +61,13 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.0.27f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Materials\Skyboxes\FarlandSkies\Demo\Scripts\Skybox\SkyboxRotator.cs" />
+    <Compile Include="Assets\Materials\Skyboxes\FarlandSkies\Demo\Scripts\Player\SmoothMouseLook.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Materials\Skyboxes\FarlandSkies\Demo\Scripts\Player\FPSWalkerEnhanced.cs" />
+    <Compile Include="Assets\Materials\Skyboxes\FarlandSkies\Demo\Scripts\Skybox\SkyboxChanger.cs" />
     <Compile Include="Assets\Scripts\WinTrigger.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
   </ItemGroup>
@@ -89,6 +93,7 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
+    <None Include="Assets\Models\kenney_nature-kit\License.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>

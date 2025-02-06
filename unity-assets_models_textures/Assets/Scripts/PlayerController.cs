@@ -5,7 +5,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 10f; // on serialise les variables pour pouvoir les modifier dans l'inspecteur
     [SerializeField] private float maxJumpHeight = 2f; // idem
     [SerializeField] private LayerMask groundLayer; // idem
-
     private Rigidbody rb;
     private bool isGrounded;
     private float jumpVelocity;
@@ -18,6 +17,7 @@ public class PlayerController : MonoBehaviour
         jumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * maxJumpHeight);
     }
 
+
     void Update() 
     {
         HandleMovement();
@@ -25,10 +25,22 @@ public class PlayerController : MonoBehaviour
         falling();
     }
 
-    private void HandleMovement() // ici on adapte la gravitée pour un trucs plus realiste ( chiant de faire un suat de 2 pendant 5 secondes)
+    private void HandleMovement()
     {
-        Vector3 moveInput = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")).normalized;
-        rb.linearVelocity = new Vector3(moveInput.x * moveSpeed, rb.linearVelocity.y, moveInput.z * moveSpeed);
+        Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")); // Use GetAxisRaw
+
+        if (moveInput.magnitude > 0)
+        {
+            Transform cameraTransform = Camera.main.transform;
+            Vector3 moveDirection = cameraTransform.right * moveInput.x + cameraTransform.forward * moveInput.z;
+            moveDirection.Normalize();
+
+            rb.linearVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
+        }
+        else
+        {
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0); // Stop horizontal movement when no input
+        }
     }
 
     private void HandleJump() // les sauts sont geré a part

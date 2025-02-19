@@ -1,9 +1,9 @@
 using UnityEngine;
-using TMPro; // Utilisation de TextMeshPro
+using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-    public TextMeshProUGUI TimerText; // Assigne dans l'Inspector
+    public Text TimerText; // Assigne dans l'Inspector
     private float elapsedTime = 0f;
     public bool isRunning = true;
 

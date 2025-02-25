@@ -3,31 +3,34 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-    public Text TimerText; // Assigne dans l'Inspector
-    private float elapsedTime = 0f;
-    public bool isRunning = true;
+    public Text timerText;
+    private float tempsEcoule = 0f;
+    private bool estEnCours = true;
 
     void Update()
     {
-        if (isRunning)
+        if (estEnCours)
         {
-            elapsedTime += Time.deltaTime;
-            UpdateTimerDisplay();
+            tempsEcoule += Time.unscaledDeltaTime;
+            MettreAJourAffichageTimer();
         }
     }
 
-    void UpdateTimerDisplay()
+    void MettreAJourAffichageTimer()
     {
-        int minutes = Mathf.FloorToInt(elapsedTime / 60);
-        int seconds = Mathf.FloorToInt(elapsedTime % 60);
-        int milliseconds = Mathf.FloorToInt((elapsedTime * 100) % 100);
-        TimerText.text = string.Format("{0}:{1:00}.{2:00}", minutes, seconds, milliseconds);
+        int minutes = Mathf.FloorToInt(tempsEcoule / 60);
+        int secondes = Mathf.FloorToInt(tempsEcoule % 60);
+        int millisecondes = Mathf.FloorToInt((tempsEcoule * 100) % 100);
+        timerText.text = string.Format("{0}:{1:00}.{2:00}", minutes, secondes, millisecondes);
     }
 
-    public void StopTimer()
+    public void ArreterTimer()
     {
-        isRunning = false;
-        TimerText.color = Color.green; // Change la couleur en vert
-        TimerText.fontSize = 60; // Augmente la taille
+        estEnCours = false;
+    }
+
+    public void DemarrerTimer()
+    {
+        estEnCours = true;
     }
 }

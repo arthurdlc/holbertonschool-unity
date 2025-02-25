@@ -256,7 +256,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5289786045295668534}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: RestartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2712147330549211274
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,7 +389,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5786990153949454858}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: MainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3291068119481088919
 GameObject:
   m_ObjectHideFlags: 0
@@ -608,7 +632,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3328700182980895069
 RectTransform:
   m_ObjectHideFlags: 0
@@ -688,7 +712,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
+  m_BlockingObjects: 3
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -861,8 +885,8 @@ RectTransform:
   - {fileID: 3195914260042920443}
   - {fileID: 9160314797721541115}
   - {fileID: 1436893058214064345}
-  - {fileID: 3598712363415684064}
   - {fileID: 1312245984393205894}
+  - {fileID: 288241418268061647}
   m_Father: {fileID: 3328700182980895069}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1028,7 +1052,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7318290797371202091}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
+        m_MethodName: ResumeGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8275719719944448030
 GameObject:
   m_ObjectHideFlags: 0
@@ -1165,7 +1201,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1001 &1829214177620994864
+--- !u!1001 &3212077274546030367
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -1173,6 +1209,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8325688349783126893}
     m_Modifications:
+    - target: {fileID: 2576839689819915210, guid: 08ad76305e31c1d4fac6b2eb309d3947, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2744307414249934967, guid: 08ad76305e31c1d4fac6b2eb309d3947, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2923853523123169488, guid: 08ad76305e31c1d4fac6b2eb309d3947, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1270,8 +1314,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08ad76305e31c1d4fac6b2eb309d3947, type: 3}
---- !u!224 &3598712363415684064 stripped
+--- !u!224 &288241418268061647 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2923853523123169488, guid: 08ad76305e31c1d4fac6b2eb309d3947, type: 3}
-  m_PrefabInstance: {fileID: 1829214177620994864}
+  m_PrefabInstance: {fileID: 3212077274546030367}
   m_PrefabAsset: {fileID: 0}

@@ -3,7 +3,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public GameObject Player;
-
+    public bool isInverted = false;
     [SerializeField] private float _rotationSpeed = 3f;
     private Vector3 _offset;
     private float _yaw;
@@ -27,7 +27,7 @@ public class CameraController : MonoBehaviour
         float mouseY = Input.GetAxis("Mouse Y") * _rotationSpeed;
 
         _yaw += mouseX;
-        _pitch -= mouseY;
+        _pitch += isInverted ? mouseY : -mouseY;
 
         // Clamp the pitch to prevent flipping
         _pitch = Mathf.Clamp(_pitch, -90f, 90f);

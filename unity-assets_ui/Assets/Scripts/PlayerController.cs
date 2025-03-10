@@ -15,9 +15,10 @@ public class PlayerController : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         jumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * maxJumpHeight);
+ 
     }
-
-
+// necessité d'utilé un raycast pour les mouvements du player, cela permettraa de fluidifier ses mouvement et tt 
+// important de mettre en place une zone de chat et un principe de log avce session et tout
     void Update() 
     {
         HandleJump();
@@ -73,4 +74,6 @@ public class PlayerController : MonoBehaviour
             rb.position = new Vector3(0, 20, 0);
         }
     }
+    // il me faudrai un colider supplementaire sur les player pour la hit box de ses derniers, pour une seul hitbox pour tous ou sur un mesh collider
+    // pour les spells mettre en place une "compétence chacun, (on part deja sur une arme propre a eux)"
 }

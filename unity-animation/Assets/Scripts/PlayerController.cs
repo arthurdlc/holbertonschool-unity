@@ -2,119 +2,82 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float MoveSpeed = 10f;
-    public float JumpForce = 5f;
-    public float RotationSpeed = 10f;
+    [SerializeField] private float moveSpeed = 10f;
+    [SerializeField] private float maxJumpHeight = 2f;
+    [SerializeField] private LayerMask groundLayer;
+    private Rigidbody rb;
+    private bool isGrounded;
+    private float jumpVelocity;
+    private Animator animator;
 
-    [SerializeField] private Rigidbody _rb;
-    [SerializeField] private Transform _groundCheck;
-    [SerializeField] private Transform _respawnPoint;
-    [SerializeField] private float _groundCheckRadius = 0.3f;
-    [SerializeField] private LayerMask _groundLayer;
-    [SerializeField] private TrailRenderer _trailRenderer;
-    [SerializeField] private Animator _animator;
-
-    private float _moveX;
-    private float _moveZ;
-    private bool _isGrounded;
-    private bool _jumpPressed;
-    private bool _isFalling = false;
-    private bool _isStanding = true;
+    void Start()
+    {
+        Physics.gravity = new Vector3(0, -70f, 0);
+        rb = GetComponent<Rigidbody>();
+        jumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * maxJumpHeight);
+        animator = GetComponent<Animator>();  // Référence à l'Animator
+    }
 
     void Update()
     {
-        GetInputs();
-        RespawnIfFallen();
-    }
-
-    private void FixedUpdate()
-    {
-        _isGrounded = Physics.CheckSphere(_groundCheck.position, _groundCheckRadius, _groundLayer);
-        if (_isGrounded && _isFalling == true)
-        {
-            _animator.SetBool("isFalling", false);
-            _isStanding = false;
-        }
-        if (_isGrounded && _trailRenderer.emitting == true)
-        {
-            _trailRenderer.emitting = false;
-            _animator.SetBool("isJumping", false);
-        }
-        if (!_isFalling && _isStanding)
-        {
-            HandleMovement();
-            HandleJump();
-        }
-    }
-
-    private void GetInputs()
-    {
-        _moveX = Input.GetAxis("Horizontal");
-        _moveZ = Input.GetAxis("Vertical");
-
-        if (Input.GetKeyDown(KeyCode.Space) && _isGrounded)
-        {
-            _jumpPressed = true;
-        }
+        HandleJump();
+        HandleMovement();
+        falling();
     }
 
     private void HandleMovement()
     {
+        Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 
-        Vector3 camForward = Camera.main.transform.forward;
-        Vector3 camRight = Camera.main.transform.right;
-        camForward.y = 0;
-        camRight.y = 0;
-        camForward.Normalize();
-        camRight.Normalize();
-
-        Vector3 moveDirection = camForward * _moveZ + camRight * _moveX;;
-        if (moveDirection.magnitude >= 0.1f)
+        if (moveInput.magnitude > 0)
         {
-            _animator.SetBool("isRunning", true);
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime);
+            Transform cameraTransform = Camera.main.transform;
+            Vector3 moveDirection = cameraTransform.right * moveInput.x + cameraTransform.forward * moveInput.z;
+            moveDirection.y = 0; 
+            moveDirection.Normalize();
 
-            Vector3 newPosition = transform.forward * MoveSpeed * Time.fixedDeltaTime;
-            _rb.MovePosition(_rb.position + newPosition);
+            transform.rotation = Quaternion.LookRotation(moveDirection);  // Appliquer la rotation
+
+            rb.linearVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);  // Appliquer le mouvement
+
+            animator.SetFloat("Speed", moveInput.magnitude * moveSpeed);  // Mettre à jour le paramètre 'Speed' de l'Animator
         }
         else
         {
-            _animator.SetBool("isRunning", false);
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);  // Stopper le mouvement horizontal
+            animator.SetFloat("Speed", 0);  // Réinitialiser 'Speed' dans l'Animator
         }
     }
 
     private void HandleJump()
     {
-        if (_jumpPressed)
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            _trailRenderer.emitting = true;
-            _rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
-            _jumpPressed = false;
-            _animator.SetBool("isJumping", true);
-        }
-    }
-    private void OnDrawGizmos()
-    {
-        if (_groundCheck != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpVelocity, rb.linearVelocity.z);  // Appliquer la vitesse de saut
         }
     }
 
-    private void RespawnIfFallen()
+    private void OnCollisionStay(Collision collision)
     {
-        if (transform.position.y < -15)
+        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
         {
-            _isFalling = true;
-            _animator.SetBool("isFalling", true);
-            transform.position = _respawnPoint.position;
+            isGrounded = true;  // Le joueur est au sol
         }
     }
-    public void StandBackUp()
+
+    private void OnCollisionExit(Collision collision)
     {
-        _isFalling = false;
-        _isStanding = true;
+        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
+        {
+            isGrounded = false;  // Le joueur quitte le sol
+        }
+    }
+
+    private void falling()
+    {
+        if (rb.position.y < -10)
+        {
+            rb.position = new Vector3(0, 20, 0);  // Réinitialiser la position en cas de chute
+        }
     }
 }

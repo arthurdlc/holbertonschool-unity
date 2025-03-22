@@ -13196,7 +13196,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 105952489309614306, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1830936574250648789, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
       propertyPath: winCanvas

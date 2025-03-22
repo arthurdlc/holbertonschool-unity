@@ -2,24 +2,23 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 10f; // on serialise les variables pour pouvoir les modifier dans l'inspecteur
-    [SerializeField] private float maxJumpHeight = 2f; // idem
-    [SerializeField] private LayerMask groundLayer; // idem
+    [SerializeField] private float moveSpeed = 10f;
+    [SerializeField] private float maxJumpHeight = 2f;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform characterModel; // 🔄 Modèle 3D (enfant de la capsule)
+
     private Rigidbody rb;
     private bool isGrounded;
     private float jumpVelocity;
 
-    void Start() // initialisation de la gravité, et de la vitesse de saut ainsi que l'attibution du rigidbody
+    void Start()
     {
         Physics.gravity = new Vector3(0, -70f, 0);
-
         rb = GetComponent<Rigidbody>();
         jumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * maxJumpHeight);
- 
     }
-// necessité d'utilé un raycast pour les mouvements du player, cela permettraa de fluidifier ses mouvement et tt 
-// important de mettre en place une zone de chat et un principe de log avce session et tout
-    void Update() 
+
+    void Update()
     {
         HandleJump();
         HandleMovement();
@@ -28,31 +27,36 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
-        Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")); // Use GetAxisRaw
-
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+        Vector3 moveInput = new Vector3(horizontal, 0, vertical);
+    
         if (moveInput.magnitude > 0)
         {
             Transform cameraTransform = Camera.main.transform;
-            Vector3 moveDirection = cameraTransform.right * moveInput.x + cameraTransform.forward * moveInput.z;
+            Vector3 moveDirection = cameraTransform.right * horizontal + cameraTransform.forward * vertical;
+            moveDirection.y = 0;
             moveDirection.Normalize();
 
-            rb.linearVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
-        }
-        else
-        {
-            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0); // Stop horizontal movement when no input
+            rb.velocity = new Vector3(moveDirection.x * moveSpeed, rb.velocity.y, moveDirection.z * moveSpeed);
+
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.2f);
+
+            Debug.Log("Player Rotation: " + transform.rotation.eulerAngles);
         }
     }
 
-    private void HandleJump() // les sauts sont geré a part
+
+    private void HandleJump()
     {
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpVelocity, rb.linearVelocity.z);
+            rb.velocity = new Vector3(rb.velocity.x, jumpVelocity, rb.velocity.z);
         }
     }
 
-    private void OnCollisionStay(Collision collision) // ici le joueur reste sur le sol donc il peut sauter
+    private void OnCollisionStay(Collision collision)
     {
         if (((1 << collision.gameObject.layer) & groundLayer) != 0)
         {
@@ -60,20 +64,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit(Collision collision) // pour check si le jouueur a quitté le sol pour l'empecher de faire des sauts en l'air 
+    private void OnCollisionExit(Collision collision)
     {
         if (((1 << collision.gameObject.layer) & groundLayer) != 0)
         {
             isGrounded = false;
         }
     }
-    private void falling() // si le joueur tombe, il perd
+
+    private void falling()
     {
         if (rb.position.y < -10)
         {
             rb.position = new Vector3(0, 20, 0);
         }
     }
-    // il me faudrai un colider supplementaire sur les player pour la hit box de ses derniers, pour une seul hitbox pour tous ou sur un mesh collider
-    // pour les spells mettre en place une "compétence chacun, (on part deja sur une arme propre a eux)"
 }

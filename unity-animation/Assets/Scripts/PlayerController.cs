@@ -2,78 +2,119 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 10f; // on serialise les variables pour pouvoir les modifier dans l'inspecteur
-    [SerializeField] private float maxJumpHeight = 2f; // idem
-    [SerializeField] private LayerMask groundLayer; // idem
-    private Rigidbody rb;
-    private bool isGrounded;
-    private float jumpVelocity;
+    public float MoveSpeed = 10f;
+    public float JumpForce = 5f;
+    public float RotationSpeed = 10f;
 
-    void Start() // initialisation de la gravité, et de la vitesse de saut ainsi que l'attibution du rigidbody
+    [SerializeField] private Rigidbody _rb;
+    [SerializeField] private Transform _groundCheck;
+    [SerializeField] private Transform _respawnPoint;
+    [SerializeField] private float _groundCheckRadius = 0.3f;
+    [SerializeField] private LayerMask _groundLayer;
+    [SerializeField] private TrailRenderer _trailRenderer;
+    [SerializeField] private Animator _animator;
+
+    private float _moveX;
+    private float _moveZ;
+    private bool _isGrounded;
+    private bool _jumpPressed;
+    private bool _isFalling = false;
+    private bool _isStanding = true;
+
+    void Update()
     {
-        Physics.gravity = new Vector3(0, -70f, 0);
-
-        rb = GetComponent<Rigidbody>();
-        jumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * maxJumpHeight);
- 
+        GetInputs();
+        RespawnIfFallen();
     }
-// necessité d'utilé un raycast pour les mouvements du player, cela permettraa de fluidifier ses mouvement et tt 
-// important de mettre en place une zone de chat et un principe de log avce session et tout
-    void Update() 
+
+    private void FixedUpdate()
     {
-        HandleJump();
-        HandleMovement();
-        falling();
+        _isGrounded = Physics.CheckSphere(_groundCheck.position, _groundCheckRadius, _groundLayer);
+        if (_isGrounded && _isFalling == true)
+        {
+            _animator.SetBool("isFalling", false);
+            _isStanding = false;
+        }
+        if (_isGrounded && _trailRenderer.emitting == true)
+        {
+            _trailRenderer.emitting = false;
+            _animator.SetBool("isJumping", false);
+        }
+        if (!_isFalling && _isStanding)
+        {
+            HandleMovement();
+            HandleJump();
+        }
+    }
+
+    private void GetInputs()
+    {
+        _moveX = Input.GetAxis("Horizontal");
+        _moveZ = Input.GetAxis("Vertical");
+
+        if (Input.GetKeyDown(KeyCode.Space) && _isGrounded)
+        {
+            _jumpPressed = true;
+        }
     }
 
     private void HandleMovement()
     {
-        Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")); // Use GetAxisRaw
 
-        if (moveInput.magnitude > 0)
+        Vector3 camForward = Camera.main.transform.forward;
+        Vector3 camRight = Camera.main.transform.right;
+        camForward.y = 0;
+        camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        Vector3 moveDirection = camForward * _moveZ + camRight * _moveX;;
+        if (moveDirection.magnitude >= 0.1f)
         {
-            Transform cameraTransform = Camera.main.transform;
-            Vector3 moveDirection = cameraTransform.right * moveInput.x + cameraTransform.forward * moveInput.z;
-            moveDirection.Normalize();
+            _animator.SetBool("isRunning", true);
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime);
 
-            rb.linearVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
+            Vector3 newPosition = transform.forward * MoveSpeed * Time.fixedDeltaTime;
+            _rb.MovePosition(_rb.position + newPosition);
         }
         else
         {
-            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0); // Stop horizontal movement when no input
+            _animator.SetBool("isRunning", false);
         }
     }
 
-    private void HandleJump() // les sauts sont geré a part
+    private void HandleJump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (_jumpPressed)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpVelocity, rb.linearVelocity.z);
+            _trailRenderer.emitting = true;
+            _rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+            _jumpPressed = false;
+            _animator.SetBool("isJumping", true);
+        }
+    }
+    private void OnDrawGizmos()
+    {
+        if (_groundCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
         }
     }
 
-    private void OnCollisionStay(Collision collision) // ici le joueur reste sur le sol donc il peut sauter
+    private void RespawnIfFallen()
     {
-        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
+        if (transform.position.y < -15)
         {
-            isGrounded = true;
+            _isFalling = true;
+            _animator.SetBool("isFalling", true);
+            transform.position = _respawnPoint.position;
         }
     }
-
-    private void OnCollisionExit(Collision collision) // pour check si le jouueur a quitté le sol pour l'empecher de faire des sauts en l'air 
+    public void StandBackUp()
     {
-        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
-        {
-            isGrounded = false;
-        }
+        _isFalling = false;
+        _isStanding = true;
     }
-    private void falling() // si le joueur tombe, il perd
-    {
-        if (rb.position.y < -10)
-        {
-            rb.position = new Vector3(0, 20, 0);
-        }
-    }
-    // il me faudrai un colider supplementaire sur les player pour la hit box de ses derniers, pour une seul hitbox pour tous ou sur un mesh collider
-    // pour les spells mettre en place une "compétence chacun, (on part deja sur une arme propre a eux)"
 }

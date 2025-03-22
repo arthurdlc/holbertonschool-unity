@@ -4829,6 +4829,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 8ed864169c0648947aa18d8d197c676e, type: 3}
   m_PrefabInstance: {fileID: 678091659}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &681073865 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1933135533706587674, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
+  m_PrefabInstance: {fileID: 1615371130005214229}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &693821072
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13189,6 +13194,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 105952489309614306, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1830936574250648789, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
       propertyPath: winCanvas
       value: 
@@ -13225,6 +13234,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 39439ec76d3a209448e6945aca0ab8c6, type: 2}
+    - target: {fileID: 5921524979192116951, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
+      propertyPath: characterModel
+      value: 
+      objectReference: {fileID: 681073865}
     - target: {fileID: 6841825301639873484, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
       propertyPath: m_Name
       value: Player

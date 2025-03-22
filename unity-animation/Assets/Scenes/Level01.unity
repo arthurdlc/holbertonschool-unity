@@ -13205,10 +13205,26 @@ PrefabInstance:
       propertyPath: finalTimeText
       value: 
       objectReference: {fileID: 2059874945}
+    - target: {fileID: 2143377927305338310, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4712482585575542463, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
       propertyPath: m_Constraints
       value: 112
       objectReference: {fileID: 0}
+    - target: {fileID: 4712482585575542463, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
+      propertyPath: m_Interpolate
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4712482585575542463, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5490957023526384736, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 39439ec76d3a209448e6945aca0ab8c6, type: 2}
     - target: {fileID: 6841825301639873484, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
       propertyPath: m_Name
       value: Player

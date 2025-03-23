@@ -1,69 +1,55 @@
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    public GameObject pauseCanvas;
-    public Button restartButton;
-    public Button resumeButton;
-    public Button menuButton;
-    private Timer timerScript;
-
-    void Start()
-    {
-        timerScript = FindObjectOfType<Timer>();
-        pauseCanvas.SetActive(false);
-
-        restartButton.onClick.AddListener(RestartGame);
-        resumeButton.onClick.AddListener(ResumeGame);
-        menuButton.onClick.AddListener(MainMenu);
-    }
+    [SerializeField] private GameObject pauseScreen;
+    [SerializeField] private Canvas pauseCanvas;
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            TogglePause();
+            if (Time.timeScale == 0)
+            {
+                Pause(false);
+            }
+            else
+            {
+                Pause(true);
+            }
         }
     }
 
-    void TogglePause()
+    private void Pause(bool pause)
     {
-        if (Time.timeScale == 0)
-        {
-            ResumeGame();
-        }
-        else
-        {
-            PauseGame();
-        }
+        Time.timeScale = pause ? 0 : 1;
+        //instruction unclear, hide canvas instead of gameobject
+        //pauseScreen.SetActive(pause);
+        pauseCanvas.enabled = pause;
     }
 
-    public void PauseGame()
+    public void Resume()
     {
-        Time.timeScale = 0;
-        pauseCanvas.SetActive(true);
-        timerScript.ArreterTimer();
+        Pause(false);
     }
 
-    public void ResumeGame()
+    public void Restart()
     {
-        Time.timeScale = 1;
-        pauseCanvas.SetActive(false);
-        timerScript.DemarrerTimer();
-    }
-
-    public void RestartGame()
-    {
-        ResumeGame();
+        Pause(false);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void MainMenu()
     {
-        ResumeGame();
+        Pause(false);
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void Options()
+    {
+        Pause(false);
+        SharedInfo.Instance.SetPreviousScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene("Options");
     }
 }

@@ -1,22 +1,28 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
 public class MainMenu : MonoBehaviour
 {
+
     public void LevelSelect(int level)
     {
-        string sceneName = "Level0" + level; // Assumes scenes are named "Level01", "Level02", etc.
-        SceneManager.LoadScene(sceneName);
+        SharedInfo.Instance.SetPreviousScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(level);
     }
 
     public void Options()
     {
+        SharedInfo.Instance.SetPreviousScene(SceneManager.GetActiveScene().name);
         SceneManager.LoadScene("Options");
     }
 
-    public void ExitButton()
+    public void Quit()
     {
+#if UNITY_EDITOR
         Debug.Log("Exited");
-        Application.Quit(); // Closes the game (Only works in a built version)
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
+
 }

@@ -1,36 +1,44 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Timer : MonoBehaviour
 {
-    public Text timerText;
-    private float tempsEcoule = 0f;
-    private bool estEnCours = true;
+    public Text TimerText;
 
+    [SerializeField] private GameObject _timerPanel;
+    [SerializeField] private GameObject _winPanel;
+    [SerializeField] private TMP_Text _winText;
+    private float _time = 0f;
+    private bool _timerIsStopped = false;
+
+    // Update is called once per frame
     void Update()
     {
-        if (estEnCours)
-        {
-            tempsEcoule += Time.unscaledDeltaTime;
-            MettreAJourAffichageTimer();
-        }
+        if (!_timerIsStopped)
+            _time += Time.deltaTime;
+    }
+    private void LateUpdate()
+    {
+        if (!_timerIsStopped)
+            UpdateTimerDisplay();
     }
 
-    void MettreAJourAffichageTimer()
+    private void UpdateTimerDisplay()
     {
-        int minutes = Mathf.FloorToInt(tempsEcoule / 60);
-        int secondes = Mathf.FloorToInt(tempsEcoule % 60);
-        int millisecondes = Mathf.FloorToInt((tempsEcoule * 100) % 100);
-        timerText.text = string.Format("{0}:{1:00}.{2:00}", minutes, secondes, millisecondes);
+        int minutes = Mathf.FloorToInt(_time / 60f);
+        float seconds = _time % 60f;
+        int milliseconds = Mathf.FloorToInt((_time * 100f) % 100f);
+
+        TimerText.text = string.Format("{0:0}:{1:00}.{2:00}", minutes, seconds, milliseconds);
     }
 
-    public void ArreterTimer()
+    public void Win()
     {
-        estEnCours = false;
+        _timerIsStopped = true;
+        _winPanel.SetActive(true);
+        _timerPanel.SetActive(false);
+        _winText.text = TimerText.text;
     }
 
-    public void DemarrerTimer()
-    {
-        estEnCours = true;
-    }
 }

@@ -1,40 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class OptionsMenu : MonoBehaviour
 {
-    public Toggle invertYToggle;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        // Charger la valeur de l'inversion depuis PlayerPrefs, si elle existe
-        if (PlayerPrefs.HasKey("isInverted"))
-        {
-            invertYToggle.isOn = PlayerPrefs.GetInt("isInverted") == 1;
-        }
-        else
-        {
-            // Par défaut, on peut définir à false
-            invertYToggle.isOn = false;
-        }
+    [SerializeField] private Toggle _invertYToggle;
+    private bool _invertYDefault;
+    private void Start() {
+        
+        _invertYDefault = _invertYToggle.isOn = SharedInfo.Instance.InvertY;
     }
 
     public void Back()
     {
-        // Charger la scène précédente
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene(SharedInfo.Instance.PreviousScene);
     }
 
     public void Apply()
     {
-        // Sauvegarder la préférence d'inversion dans PlayerPrefs
-        PlayerPrefs.SetInt("isInverted", invertYToggle.isOn ? 1 : 0);
-
-        // Appliquer la scène précédente
+        if(_invertYToggle.isOn != _invertYDefault) {
+            SharedInfo.Instance.SetInvertY(_invertYToggle.isOn);
+        }
         Back();
     }
 }

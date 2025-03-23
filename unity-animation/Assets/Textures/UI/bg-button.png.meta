@@ -148,9 +148,9 @@ TextureImporter:
       name: bg-button_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 0
-        width: 201
+        width: 199
         height: 70
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -170,9 +170,9 @@ TextureImporter:
       name: bg-button_1
       rect:
         serializedVersion: 2
-        x: 203
+        x: 200
         y: 0
-        width: 198
+        width: 200
         height: 70
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -192,12 +192,12 @@ TextureImporter:
       name: bg-button_2
       rect:
         serializedVersion: 2
-        x: 403
+        x: 400
         y: 0
-        width: 197
+        width: 200
         height: 70
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []

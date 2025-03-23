@@ -1,108 +1,109 @@
 using UnityEngine;
 
+
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 10f;
-    [SerializeField] private float maxJumpHeight = 2f;
-    [SerializeField] private LayerMask groundLayer;
-    private Rigidbody rb;
-    private bool isGrounded;
-    private float jumpVelocity;
-    private Transform characterMesh;
-    private Animator animator;
+    public CharacterController controller;
+    public float speed = 12f;
+    public float rotateSpeed = 6.0f;
+    private float jumpSpeed = 9f;
+    public float gravity = 18f;
+    private Transform cam;
 
-    void Start()
+
+    Vector3 velocity;
+    private Vector3 direction = Vector3.zero;
+    private Vector3 startPosition;
+ 
+    public float turnSmoothTime = 0.1f;
+    float turnSmoothVelocity;
+
+
+    Animator anim;
+
+
+
+
+    private void Start()
     {
-        Physics.gravity = new Vector3(0, -70f, 0);
-        rb = GetComponent<Rigidbody>();
-        jumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * maxJumpHeight);
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        controller = GetComponent<CharacterController>();
+        cam = GetComponent<Transform>();
+        startPosition = cam.position;
+        anim = GetComponentInChildren<Animator>();
 
-        characterMesh = transform.GetChild(0);
-        animator = characterMesh.GetComponent<Animator>();
+
     }
-
-    void Update()
+    private void Update()
     {
-        HandleJump();
-        HandleMovement();
-        CheckLanding();
-        falling();
-
-        if (characterMesh != null)
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+        
+        Debug.Log(cam.position.y);
+        if (controller.isGrounded)
         {
-            characterMesh.localPosition = new Vector3(0, -1.1f, 0);
-            characterMesh.localRotation = Quaternion.identity;
-        }
-    }
+            //Control  of animations
+            Debug.Log("TIERRA ON");
+            anim.SetBool("ground",true);
+            anim.SetBool("falling",false);
+            anim.SetBool("Run", false);
 
-    private void HandleMovement()
-    {
-        Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        float speed = rb.linearVelocity.magnitude;
+            direction = new Vector3(horizontal, 0, vertical).normalized;
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-        if (moveInput.magnitude > 0)
-        {
-            Transform cameraTransform = Camera.main.transform;
-            Vector3 moveDirection = cameraTransform.right * moveInput.x + cameraTransform.forward * moveInput.z;
-            moveDirection.y = 0;
-            moveDirection.Normalize();
 
-            transform.rotation = Quaternion.LookRotation(moveDirection);
-            rb.linearVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
+            direction = cam.right * direction.x + cam.forward * direction.z;
+            direction.y = 0f;
+            direction *= speed;
+
+
+            if(Input.GetButtonDown("Jump"))
+            {
+                direction.y = jumpSpeed;
+                anim.SetTrigger("Jump");
+                anim.SetBool("ground",false);
+            }
+            
         }
         else
         {
-            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
-        }
+            Debug.Log("TIERRA OFF");
+            direction = new Vector3(horizontal, direction.y, vertical);
+            direction = transform.TransformDirection(direction);
 
-        if (animator != null)
-        {
-            animator.SetFloat("Speed", speed);
-        }
-    }
 
-    private void HandleJump()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpVelocity, rb.linearVelocity.z);
-            animator.SetBool("IsJumping", true);
-            Debug.Log("Jump Triggered"); // Vérifier que l'animation est bien activée
-        }
-    }
 
-    private void CheckLanding()
-    {
-        if (isGrounded && animator.GetBool("IsJumping"))
-        {
-            animator.SetBool("IsJumping", false);
-            Debug.Log("Landed - IsJumping set to false"); // Vérifier que le retour au sol est bien détecté
-        }
-    }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
-        {
-            isGrounded = true;
-            CheckLanding();
+            direction.x *= speed;
+            direction.z *= speed;
+           
         }
-    }
+        direction.y -= gravity * Time.deltaTime;
+        controller.Move(direction * Time.deltaTime);
 
-    private void OnCollisionExit(Collision collision)
-    {
-        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
-        {
-            isGrounded = false;
-        }
-    }
 
-    private void falling()
-    {
-        if (rb.position.y < -10)
+
+
+        //if fall restart from sky
+        if (cam.position.y < -20)
         {
-            rb.position = new Vector3(0, 20, 0);
+            anim.SetBool("ground", false);
+            anim.SetBool("falling", true);
+            anim.SetBool("Run", false);
+            cam.position = new Vector3(startPosition.x, startPosition.y + 15, startPosition.z);
         }
-    }
+        if (Input.GetKey("w") || Input.GetKey("a") || Input.GetKey("s") || Input.GetKey("d"))
+        {
+           
+            Debug.Log("RUN ON");
+            Debug.Log(vertical);
+            Debug.Log(horizontal);
+            anim.SetBool("Run",true);
+        }
+        else
+        {
+            anim.SetBool("Run",false);
+        }
+    }    
 }

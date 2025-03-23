@@ -13235,6 +13235,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9100000, guid: 39439ec76d3a209448e6945aca0ab8c6, type: 2}
     - target: {fileID: 5921524979192116951, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
+      propertyPath: rotationSpeed
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 5921524979192116951, guid: 977e6830ca2ae454b978e5517fcc71c6, type: 3}
       propertyPath: characterModel
       value: 
       objectReference: {fileID: 681073865}

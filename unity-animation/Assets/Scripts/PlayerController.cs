@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private bool isGrounded;
     private float jumpVelocity;
+    private Transform characterMesh;
     private Animator animator;
 
     void Start()
@@ -15,7 +16,10 @@ public class PlayerController : MonoBehaviour
         Physics.gravity = new Vector3(0, -70f, 0);
         rb = GetComponent<Rigidbody>();
         jumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * maxJumpHeight);
-        animator = GetComponent<Animator>();  // Référence à l'Animator
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+        characterMesh = transform.GetChild(0); // Récupère le mesh enfant
+        animator = characterMesh.GetComponent<Animator>(); // Récupère l'Animator
     }
 
     void Update()
@@ -23,29 +27,37 @@ public class PlayerController : MonoBehaviour
         HandleJump();
         HandleMovement();
         falling();
+
+        if (characterMesh != null)
+        {
+            characterMesh.localPosition = new Vector3(0, -1.1f, 0);
+            characterMesh.localRotation = Quaternion.identity;
+        }
     }
 
     private void HandleMovement()
     {
         Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+        float speed = moveInput.magnitude; // On calcule la vitesse du joueur
 
-        if (moveInput.magnitude > 0)
+        if (speed > 0)
         {
             Transform cameraTransform = Camera.main.transform;
             Vector3 moveDirection = cameraTransform.right * moveInput.x + cameraTransform.forward * moveInput.z;
-            moveDirection.y = 0; 
+            moveDirection.y = 0;
             moveDirection.Normalize();
 
-            transform.rotation = Quaternion.LookRotation(moveDirection);  // Appliquer la rotation
-
-            rb.linearVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);  // Appliquer le mouvement
-
-            animator.SetFloat("Speed", moveInput.magnitude * moveSpeed);  // Mettre à jour le paramètre 'Speed' de l'Animator
+            transform.rotation = Quaternion.LookRotation(moveDirection);
+            rb.linearVelocity = new Vector3(moveDirection.x * moveSpeed, rb.linearVelocity.y, moveDirection.z * moveSpeed);
         }
         else
         {
-            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);  // Stopper le mouvement horizontal
-            animator.SetFloat("Speed", 0);  // Réinitialiser 'Speed' dans l'Animator
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+        }
+
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", speed * moveSpeed); // Met à jour l'animation
         }
     }
 
@@ -53,7 +65,8 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpVelocity, rb.linearVelocity.z);  // Appliquer la vitesse de saut
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpVelocity, rb.linearVelocity.z);
+            animator.SetTrigger("Jump"); // Déclenche l'animation de saut
         }
     }
 
@@ -61,7 +74,7 @@ public class PlayerController : MonoBehaviour
     {
         if (((1 << collision.gameObject.layer) & groundLayer) != 0)
         {
-            isGrounded = true;  // Le joueur est au sol
+            isGrounded = true;
         }
     }
 
@@ -69,7 +82,7 @@ public class PlayerController : MonoBehaviour
     {
         if (((1 << collision.gameObject.layer) & groundLayer) != 0)
         {
-            isGrounded = false;  // Le joueur quitte le sol
+            isGrounded = false;
         }
     }
 
@@ -77,7 +90,7 @@ public class PlayerController : MonoBehaviour
     {
         if (rb.position.y < -10)
         {
-            rb.position = new Vector3(0, 20, 0);  // Réinitialiser la position en cas de chute
+            rb.position = new Vector3(0, 20, 0);
         }
     }
 }

@@ -18,14 +18,15 @@ public class PlayerController : MonoBehaviour
         jumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(Physics.gravity.y) * maxJumpHeight);
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
-        characterMesh = transform.GetChild(0); // Récupère le mesh enfant
-        animator = characterMesh.GetComponent<Animator>(); // Récupère l'Animator
+        characterMesh = transform.GetChild(0);
+        animator = characterMesh.GetComponent<Animator>();
     }
 
     void Update()
     {
         HandleJump();
         HandleMovement();
+        CheckLanding();
         falling();
 
         if (characterMesh != null)
@@ -38,9 +39,9 @@ public class PlayerController : MonoBehaviour
     private void HandleMovement()
     {
         Vector3 moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-        float speed = moveInput.magnitude; // On calcule la vitesse du joueur
+        float speed = rb.linearVelocity.magnitude;
 
-        if (speed > 0)
+        if (moveInput.magnitude > 0)
         {
             Transform cameraTransform = Camera.main.transform;
             Vector3 moveDirection = cameraTransform.right * moveInput.x + cameraTransform.forward * moveInput.z;
@@ -57,7 +58,7 @@ public class PlayerController : MonoBehaviour
 
         if (animator != null)
         {
-            animator.SetFloat("Speed", speed * moveSpeed); // Met à jour l'animation
+            animator.SetFloat("Speed", speed);
         }
     }
 
@@ -66,7 +67,17 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpVelocity, rb.linearVelocity.z);
-            animator.SetTrigger("Jump"); // Déclenche l'animation de saut
+            animator.SetBool("IsJumping", true);
+            Debug.Log("Jump Triggered"); // Vérifier que l'animation est bien activée
+        }
+    }
+
+    private void CheckLanding()
+    {
+        if (isGrounded && animator.GetBool("IsJumping"))
+        {
+            animator.SetBool("IsJumping", false);
+            Debug.Log("Landed - IsJumping set to false"); // Vérifier que le retour au sol est bien détecté
         }
     }
 
@@ -75,6 +86,7 @@ public class PlayerController : MonoBehaviour
         if (((1 << collision.gameObject.layer) & groundLayer) != 0)
         {
             isGrounded = true;
+            CheckLanding();
         }
     }
 

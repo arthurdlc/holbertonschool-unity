@@ -1,109 +1,120 @@
 using UnityEngine;
 
-
 public class PlayerController : MonoBehaviour
 {
-    public CharacterController controller;
-    public float speed = 12f;
-    public float rotateSpeed = 6.0f;
-    private float jumpSpeed = 9f;
-    public float gravity = 18f;
-    private Transform cam;
+    public float MoveSpeed = 10f;
+    public float JumpForce = 5f;
+    public float RotationSpeed = 10f;
 
+    [SerializeField] private Rigidbody _rb;
+    [SerializeField] private Transform _groundCheck;
+    [SerializeField] private Transform _respawnPoint;
+    [SerializeField] private float _groundCheckRadius = 0.3f;
+    [SerializeField] private LayerMask _groundLayer;
+    [SerializeField] private TrailRenderer _trailRenderer;
+    [SerializeField] private Animator _animator;
 
-    Vector3 velocity;
-    private Vector3 direction = Vector3.zero;
-    private Vector3 startPosition;
- 
-    public float turnSmoothTime = 0.1f;
-    float turnSmoothVelocity;
+    private float _moveX;
+    private float _moveZ;
+    private bool _isGrounded;
+    private bool _jumpPressed;
+    private bool _isFalling = false;
+    private bool _isStanding = true;
 
-
-    Animator anim;
-
-
-
-
-    private void Start()
+    void Update()
     {
-        controller = GetComponent<CharacterController>();
-        cam = GetComponent<Transform>();
-        startPosition = cam.position;
-        anim = GetComponentInChildren<Animator>();
-
-
+        GetInputs();
+        RespawnIfFallen();
     }
-    private void Update()
+
+    private void FixedUpdate()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        
-        Debug.Log(cam.position.y);
-        if (controller.isGrounded)
+        _isGrounded = Physics.CheckSphere(_groundCheck.position, _groundCheckRadius, _groundLayer);
+        if (_isGrounded && _isFalling == true)
         {
-            //Control  of animations
-            Debug.Log("TIERRA ON");
-            anim.SetBool("ground",true);
-            anim.SetBool("falling",false);
-            anim.SetBool("Run", false);
+            _animator.SetBool("isFalling", false);
+            _isStanding = false;
+        }
+        if (_isGrounded && _trailRenderer.emitting == true)
+        {
+            _trailRenderer.emitting = false;
+            _animator.SetBool("isJumping", false);
+        }
+        if (!_isFalling && _isStanding)
+        {
+            HandleMovement();
+            HandleJump();
+        }
+    }
 
-            direction = new Vector3(horizontal, 0, vertical).normalized;
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+    private void GetInputs()
+    {
+        _moveX = Input.GetAxis("Horizontal");
+        _moveZ = Input.GetAxis("Vertical");
 
+        if (Input.GetKeyDown(KeyCode.Space) && _isGrounded)
+        {
+            _jumpPressed = true;
+        }
+    }
 
-            direction = cam.right * direction.x + cam.forward * direction.z;
-            direction.y = 0f;
-            direction *= speed;
+    private void HandleMovement()
+    {
 
+        Vector3 camForward = Camera.main.transform.forward;
+        Vector3 camRight = Camera.main.transform.right;
+        camForward.y = 0;
+        camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
 
-            if(Input.GetButtonDown("Jump"))
-            {
-                direction.y = jumpSpeed;
-                anim.SetTrigger("Jump");
-                anim.SetBool("ground",false);
-            }
-            
+        Vector3 moveDirection = camForward * _moveZ + camRight * _moveX;;
+        if (moveDirection.magnitude >= 0.1f)
+        {
+            _animator.SetBool("isRunning", true);
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime);
+
+            Vector3 newPosition = transform.forward * MoveSpeed * Time.fixedDeltaTime;
+            _rb.MovePosition(_rb.position + newPosition);
         }
         else
         {
-            Debug.Log("TIERRA OFF");
-            direction = new Vector3(horizontal, direction.y, vertical);
-            direction = transform.TransformDirection(direction);
-
-
-
-
-            direction.x *= speed;
-            direction.z *= speed;
-           
+            _animator.SetBool("isRunning", false);
         }
-        direction.y -= gravity * Time.deltaTime;
-        controller.Move(direction * Time.deltaTime);
+    }
 
-
-
-
-        //if fall restart from sky
-        if (cam.position.y < -20)
+    private void HandleJump()
+    {
+        if (_jumpPressed)
         {
-            anim.SetBool("ground", false);
-            anim.SetBool("falling", true);
-            anim.SetBool("Run", false);
-            cam.position = new Vector3(startPosition.x, startPosition.y + 15, startPosition.z);
+            _trailRenderer.emitting = true;
+            _rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+            _jumpPressed = false;
+            _animator.SetBool("isJumping", true);
         }
-        if (Input.GetKey("w") || Input.GetKey("a") || Input.GetKey("s") || Input.GetKey("d"))
+    }
+    private void OnDrawGizmos()
+    {
+        if (_groundCheck != null)
         {
-           
-            Debug.Log("RUN ON");
-            Debug.Log(vertical);
-            Debug.Log(horizontal);
-            anim.SetBool("Run",true);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(_groundCheck.position, _groundCheckRadius);
         }
-        else
+    }
+
+    private void RespawnIfFallen()
+    {
+        if (transform.position.y < -15)
         {
-            anim.SetBool("Run",false);
+            _isFalling = true;
+            _animator.SetBool("isFalling", true);
+            transform.position = _respawnPoint.position;
         }
-    }    
+    }
+    public void StandBackUp()
+    {
+        _isFalling = false;
+        _isStanding = true;
+    }
 }

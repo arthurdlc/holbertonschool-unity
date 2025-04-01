@@ -12356,9 +12356,17 @@ PrefabInstance:
       propertyPath: _timerPanel
       value: 
       objectReference: {fileID: 19721293}
+    - target: {fileID: 3841189283617674678, guid: b4463cde4fdb67a4abe89eb1e54c33ed, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3862660546158504459, guid: b4463cde4fdb67a4abe89eb1e54c33ed, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4914409920192160013, guid: b4463cde4fdb67a4abe89eb1e54c33ed, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9163138606384223011, guid: b4463cde4fdb67a4abe89eb1e54c33ed, type: 3}
       propertyPath: JumpForce
@@ -12368,6 +12376,10 @@ PrefabInstance:
       propertyPath: _respawnPoint
       value: 
       objectReference: {fileID: 1149803397}
+    - target: {fileID: 9163138606384223011, guid: b4463cde4fdb67a4abe89eb1e54c33ed, type: 3}
+      propertyPath: _groundLayer.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

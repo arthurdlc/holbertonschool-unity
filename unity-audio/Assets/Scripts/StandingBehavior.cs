@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ImpactBehavior : StateMachineBehaviour
+public class StandingBehavior : StateMachineBehaviour
 {
     private PlayerController _playerController;
 
@@ -12,6 +12,10 @@ public class ImpactBehavior : StateMachineBehaviour
         {
             Debug.LogWarning("AnimationEndBehaviour: No PlayerController found on the Animator's GameObject!");
         }
-        _playerController.TriggerImpactSound();
+
+    }
+    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    {
+        _playerController.StandBackUp();
     }
 }

@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] private Canvas pauseCanvas;
+    [SerializeField] private AudioMixerSnapshot defaultSnapshot;
+    [SerializeField] private AudioMixerSnapshot pauseSnapshot;
 
     void Update()
     {
@@ -23,6 +26,10 @@ public class PauseMenu : MonoBehaviour
 
     private void Pause(bool pause)
     {
+        if (pause)
+            pauseSnapshot.TransitionTo(0f);
+        else
+            defaultSnapshot.TransitionTo(.2f);
         Time.timeScale = pause ? 0 : 1;
         //instruction unclear, hide canvas instead of gameobject
         //pauseScreen.SetActive(pause);

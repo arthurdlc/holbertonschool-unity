@@ -9,15 +9,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody _rb;
     [SerializeField] private Transform _groundCheck;
     [SerializeField] private Transform _respawnPoint;
-    [SerializeField] private float _groundCheckRadius = 0.3f;
+    [SerializeField] private float _groundCheckRadius = 0.5f;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private TrailRenderer _trailRenderer;
     [SerializeField] private Animator _animator;
-
-    [Header("Audio des pas")]
-    [SerializeField] private AudioSource _footstepAudioGrass;
-    [SerializeField] private AudioSource _footstepAudioRock;
-    private AudioSource _currentFootstepAudio;
 
     private float _moveX;
     private float _moveZ;
@@ -25,6 +20,10 @@ public class PlayerController : MonoBehaviour
     private bool _jumpPressed;
     private bool _isFalling = false;
     private bool _isStanding = true;
+
+    public event System.Action ImpactSoundTriggered;
+
+    public bool IsGrounded => _isGrounded;
 
     void Update()
     {
@@ -35,19 +34,16 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         _isGrounded = Physics.CheckSphere(_groundCheck.position, _groundCheckRadius, _groundLayer);
-
-        if (_isGrounded && _isFalling)
+        if (_isGrounded && _isFalling == true)
         {
             _animator.SetBool("isFalling", false);
             _isStanding = false;
         }
-
-        if (_isGrounded && _trailRenderer.emitting)
+        if (_isGrounded && _trailRenderer.emitting == true)
         {
             _trailRenderer.emitting = false;
             _animator.SetBool("isJumping", false);
         }
-
         if (!_isFalling && _isStanding)
         {
             HandleMovement();
@@ -68,6 +64,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleMovement()
     {
+
         Vector3 camForward = Camera.main.transform.forward;
         Vector3 camRight = Camera.main.transform.right;
         camForward.y = 0;
@@ -75,23 +72,10 @@ public class PlayerController : MonoBehaviour
         camForward.Normalize();
         camRight.Normalize();
 
-        Vector3 moveDirection = camForward * _moveZ + camRight * _moveX;
-
+        Vector3 moveDirection = camForward * _moveZ + camRight * _moveX; ;
         if (moveDirection.magnitude >= 0.1f)
         {
             _animator.SetBool("isRunning", true);
-
-            if (_isGrounded)
-            {
-                DetectSurface(); // Vérifie sur quel sol on est
-
-                if (_currentFootstepAudio != null && !_currentFootstepAudio.isPlaying)
-                {
-                    _currentFootstepAudio.pitch = Random.Range(0.9f, 1.1f);
-                    _currentFootstepAudio.Play();
-                }
-            }
-
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, RotationSpeed * Time.fixedDeltaTime);
 
@@ -101,11 +85,6 @@ public class PlayerController : MonoBehaviour
         else
         {
             _animator.SetBool("isRunning", false);
-
-            if (_currentFootstepAudio != null && _currentFootstepAudio.isPlaying)
-            {
-                _currentFootstepAudio.Stop();
-            }
         }
     }
 
@@ -117,30 +96,8 @@ public class PlayerController : MonoBehaviour
             _rb.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
             _jumpPressed = false;
             _animator.SetBool("isJumping", true);
-
-            if (_currentFootstepAudio != null && _currentFootstepAudio.isPlaying)
-            {
-                _currentFootstepAudio.Stop();
-            }
         }
     }
-
-    private void DetectSurface()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(_groundCheck.position, Vector3.down, out hit, _groundCheckRadius + 0.1f))
-        {
-            if (hit.collider.CompareTag("Grass"))
-            {
-                _currentFootstepAudio = _footstepAudioGrass;
-            }
-            else if (hit.collider.CompareTag("Rock"))
-            {
-                _currentFootstepAudio = _footstepAudioRock;
-            }
-        }
-    }
-
     private void OnDrawGizmos()
     {
         if (_groundCheck != null)
@@ -159,20 +116,14 @@ public class PlayerController : MonoBehaviour
             transform.position = _respawnPoint.position;
         }
     }
-
     public void StandBackUp()
     {
-        _isFalling = false;
         _isStanding = true;
+        _isFalling = false;
     }
 
-    // Appelé par l'animation
-    public void PlayFootstep()
+    public void TriggerImpactSound()
     {
-        if (_isGrounded && _currentFootstepAudio != null)
-        {
-            _currentFootstepAudio.pitch = Random.Range(0.9f, 1.1f);
-            _currentFootstepAudio.Play();
-        }
+        ImpactSoundTriggered?.Invoke();
     }
 }

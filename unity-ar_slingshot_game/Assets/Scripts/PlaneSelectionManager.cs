@@ -6,11 +6,11 @@ using UnityEngine.UI;
 
 public class PlaneSelectionManager : MonoBehaviour
 {
-    public ARRaycastManager raycastManager;
-    public ARPlaneManager planeManager;
-    public GameObject startButton;
+    public ARRaycastManager raycastManager; // Le composant ARRaycastManager , il faut mettre en place un raycast afin de détecter les plans
+    public ARPlaneManager planeManager; // Le composant ARPlaneManager , il faut le mettre en place afin de gerer les plans 
+    public GameObject startButton; // Le bouton Start
 
-    public static ARPlane selectedPlane;
+    public static ARPlane selectedPlane;    // Le plan sélectionné
 
     private bool planeSelected = false;
     private List<ARRaycastHit> hits = new List<ARRaycastHit>();
